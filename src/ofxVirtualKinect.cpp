@@ -154,7 +154,11 @@ bool ofxVirtualKinect::isFrameNew() {
 	return curNewFrame;
 }
 
-ofPixels& ofxVirtualKinect::getPixels() {
+unsigned char* ofxVirtualKinect::getPixels() {
+	return getPixelsRef().getPixels();
+}
+
+ofPixels& ofxVirtualKinect::getPixelsRef() {
 	if(needToUpdatePixels) {
 		updatePixels();
 		needToUpdatePixels = false;

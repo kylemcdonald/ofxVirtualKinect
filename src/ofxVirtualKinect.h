@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxKinect.h"
 
-class ofxVirtualKinect {
+class ofxVirtualKinect : public ofBaseHasPixels {
 public:
 	ofxVirtualKinect();
 	~ofxVirtualKinect();
@@ -12,7 +12,8 @@ public:
 	void update();
 	bool isFrameNew();
 	void draw(float x, float y);
-	ofPixels& getPixels();
+	unsigned char* getPixels();
+	ofPixels& getPixelsRef();	
 	
 	void setMaxLen(float maxLen);
 	void setStepSize(int stepSize);
