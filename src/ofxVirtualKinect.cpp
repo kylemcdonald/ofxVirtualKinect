@@ -5,7 +5,7 @@ const unsigned int camHeight = 480;
 
 ofxVirtualKinect::ofxVirtualKinect() :
 newFrame(false),
-maxLen(100),
+maxLength(100),
 stepSize(2),
 nearClipping(0),
 farClipping(1024),
@@ -13,12 +13,7 @@ orthoScale(10),
 position(ofVec3f(0, 0, 0)),
 sceneRotation(ofVec3f(0, 0, 0)),
 cameraRotation(ofVec3f(0, 0, 0)),
-horizontalFlip(true),
-needToUpdatePixels(false) {
-}
-
-ofxVirtualKinect::~ofxVirtualKinect() {
-	kinect.close();
+horizontalFlip(true) {
 }
 
 void ofxVirtualKinect::setup() {
@@ -33,8 +28,12 @@ void ofxVirtualKinect::setup() {
 	grayImage.allocate(camWidth, camHeight, OF_IMAGE_GRAYSCALE);
 }
 
+void ofxVirtualKinect::close() {
+    kinect.close();
+}
+
 void ofxVirtualKinect::updateSurface() {
-	float* z = kinect.getDistancePixels();
+    float* z = kinect.getDistancePixels().getData();
 	for(int y = 0; y < camHeight; y += stepSize) {
 		for(int x = 0; x < camWidth; x += stepSize) {
 			int i = y * camWidth + x;
@@ -46,7 +45,7 @@ void ofxVirtualKinect::updateSurface() {
 }
 
 void ofxVirtualKinect::updateMesh() {
-	float* z = kinect.getDistancePixels();
+	float* z = kinect.getDistancePixels().getData();
 	indices.clear();
 	for(int y = 0; y < camHeight - stepSize; y += stepSize) {
 		for(int x = 0; x < camWidth - stepSize; x += stepSize) {
@@ -61,14 +60,14 @@ void ofxVirtualKinect::updateMesh() {
 			float se = z[sei];
 			
 			if(nw != 0 && ne != 0 && sw != 0 &&
-				 abs(nw - ne) < maxLen && abs(nw - sw) < maxLen) {
+				 abs(nw - ne) < maxLength && abs(nw - sw) < maxLength) {
 				indices.push_back(nwi);
 				indices.push_back(nei);
 				indices.push_back(swi);
 			}
 			
 			if(ne != 0 && se != 0 && sw != 0 &&
-				 abs(sw - se) < maxLen && abs(ne - se) < maxLen) {
+				 abs(sw - se) < maxLength && abs(ne - se) < maxLength) {
 				indices.push_back(nei);
 				indices.push_back(sei);
 				indices.push_back(swi);
@@ -127,8 +126,8 @@ void ofxVirtualKinect::renderCamera() {
 
 void ofxVirtualKinect::updatePixels() {
 	fbo.readToPixels(colorImage);
-	unsigned char* grayPixels = grayImage.getPixels();
-	unsigned char* colorPixels = colorImage.getPixels();
+    unsigned char* grayPixels = grayImage.getData();
+	unsigned char* colorPixels = colorImage.getData();
 	int n = camWidth * camHeight;
 	for(int i = 0; i < n; i++) {
 		*grayPixels = *colorPixels;
@@ -141,10 +140,10 @@ void ofxVirtualKinect::update() {
 	kinect.update();
 	if(kinect.isFrameNew()) {
 		newFrame = true;
-		needToUpdatePixels = true;
 		updateSurface();
 		updateMesh();
-		renderCamera();
+        updatePixels();
+        renderCamera();
 	}
 }
 
@@ -154,24 +153,21 @@ bool ofxVirtualKinect::isFrameNew() {
 	return curNewFrame;
 }
 
-unsigned char* ofxVirtualKinect::getPixels() {
-	return getPixelsRef().getPixels();
-}
-
-ofPixels& ofxVirtualKinect::getPixelsRef() {
-	if(needToUpdatePixels) {
-		updatePixels();
-		needToUpdatePixels = false;
-	}
+ofPixels& ofxVirtualKinect::getPixels() {
 	return grayImage;
 }
+
+const ofPixels& ofxVirtualKinect::getPixels() const {
+    return grayImage;
+}
+
 
 void ofxVirtualKinect::draw(float x, float y) {
 	fbo.draw(x, y);
 }
 
-void ofxVirtualKinect::setMaxLen(float maxLen) {
-	this->maxLen = maxLen;
+void ofxVirtualKinect::setMaxLength(float maxLength) {
+	this->maxLength = maxLength;
 }
 
 void ofxVirtualKinect::setStepSize(int stepSize) {

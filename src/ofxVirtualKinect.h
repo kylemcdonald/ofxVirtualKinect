@@ -6,16 +6,16 @@
 class ofxVirtualKinect : public ofBaseHasPixels {
 public:
 	ofxVirtualKinect();
-	~ofxVirtualKinect();
 	
-	void setup();
+    void setup();
+    void close();
 	void update();
 	bool isFrameNew();
 	void draw(float x, float y);
-	unsigned char* getPixels();
-	ofPixels& getPixelsRef();	
+    ofPixels& getPixels();
+    const ofPixels& getPixels() const;
 	
-	void setMaxLen(float maxLen);
+	void setMaxLength(float maxLen);
 	void setStepSize(int stepSize);
 	void setClipping(float nearClipping, float farClipping);
 	void setOrthoScale(float orthoScale);
@@ -37,9 +37,8 @@ private:
 	
 	bool newFrame;
 	bool horizontalFlip;
-	bool needToUpdatePixels;
 	
-	float maxLen;
+	float maxLength;
 	int stepSize;
 	float nearClipping, farClipping;
 	float orthoScale;
