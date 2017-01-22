@@ -80,7 +80,6 @@ void ofxVirtualKinect::renderCamera() {
 	fbo.begin();
 	ofClear(0, 255);
 	
-	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_FOG);
 	
 	glClearColor(0, 0, 0, 1);
@@ -110,16 +109,19 @@ void ofxVirtualKinect::renderCamera() {
 	
 	ofScale(horizontalFlip ? -1 : 1, 1, -1);
 	
+    ofPushStyle();
+    ofEnableDepthTest();
 	ofSetColor(255);
+    ofFill();
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &(surface[0].x));
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, &indices[0]);
 	glDisableClientState(GL_VERTEX_ARRAY);
+    ofPopStyle();
 	
 	ofPopMatrix();
 	
 	glDisable(GL_FOG);
-	glDisable(GL_DEPTH_TEST);
 	
 	fbo.end();
 }

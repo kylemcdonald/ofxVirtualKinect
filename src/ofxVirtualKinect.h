@@ -25,14 +25,16 @@ public:
 	void setHorizontalFlip(bool horizontalFlip);
 	
 	int getWidth() const;
-	int getHeight() const;
+    int getHeight() const;
+    
+    ofFbo fbo;
+    
 private:
 	ofxKinect kinect;
 	
 	vector<ofVec3f> surface;
 	vector<unsigned int> indices;
 	
-	ofFbo fbo;
 	ofPixels colorImage, grayImage;
 	
 	bool newFrame;
