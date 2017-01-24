@@ -201,6 +201,10 @@ void ofxVirtualKinect::setHorizontalFlip(bool horizontalFlip) {
 	this->horizontalFlip = horizontalFlip;
 }
 
+float ofxVirtualKinect::grayToDistance(unsigned char value) const {
+    return (1 - (float(value) / 255.)) * (farClipping - nearClipping) + nearClipping;
+}
+
 int ofxVirtualKinect::getWidth() const {
 	return camWidth;
 }

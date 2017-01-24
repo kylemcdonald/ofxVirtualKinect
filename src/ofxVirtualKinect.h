@@ -23,6 +23,8 @@ public:
 	void setCameraRotation(ofVec3f cameraRotation);
 	void setSceneRotation(ofVec3f sceneRotation);
 	void setHorizontalFlip(bool horizontalFlip);
+    
+    float grayToDistance(unsigned char value) const;
 	
 	int getWidth() const;
     int getHeight() const;
